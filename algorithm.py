@@ -1,16 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-An implementation of the Principal Component Pursuit algorithm for robust PCA
-as described in `Candes, Li, Ma, & Wright <http://arxiv.org/abs/0912.3599>`_.
-
-An alternative Python implementation using non-standard dependencies and
-different hyperparameter choices is available at:
-
-http://blog.shriphani.com/2013/12/18/
-    robust-principal-component-pursuit-background-matrix-recovery/
-
-"""
-
 
 import time
 import fbpca
@@ -27,7 +15,7 @@ except ImportError:
 
 
 def inpaint_monochrome_by_svd(img: np.ndarray, max: int) -> np.ndarray:
-    # 黑白图像利用奇异值分解修复
+    # 黑白图像利用SVD分解修复
     assert(len(img.shape) == 2)
     if max > img.shape[1]:
         raise("max参数不应大于img[1]的大小")
@@ -35,18 +23,11 @@ def inpaint_monochrome_by_svd(img: np.ndarray, max: int) -> np.ndarray:
     sigma_mat = np.diag(sigma)
     return U[:, :max]@sigma_mat[0:max, 0:max]@VT[:max, :]
 
-
-def inpaint_by_slice(img: np.ndarray, max: int) -> np.ndarray:
-    # 分片修复方法
-    assert(len(img.shape) == 3)
-    return img
-
 # https://arxiv.org/pdf/0912.3599.pdf
 # https://github.com/dganguli/robust-pca
 
 
 class R_pca:
-
     def __init__(self, D, mu=None, lmbda=None):
         self.D = D
         self.S = np.zeros(self.D.shape)
